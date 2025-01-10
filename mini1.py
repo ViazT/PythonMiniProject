@@ -1,45 +1,55 @@
-import random 
+import random  
 
-def roll():
-    min_val = 1
-    max_val = 6
-    roll = random.randint(min_val, max_val)
+# Hằng số  
+MIN_PLAYERS = 2  
+MAX_PLAYERS = 4  
+MIN_DICE = 1  
+MAX_DICE = 6  
+WINNING_SCORE = 50  
 
-    return roll
+def roll():  
+    return random.randint(MIN_DICE, MAX_DICE)  
 
-while True  :
-    players = input("Enter number of players(2-4): ")
-    if players.isdigit():
-        players = int(players)
-        if 2 <= players <= 4:
+def player_turn(player_index, current_score):  
+    while True:  
+        s_roll = input("Bạn có muốn lăn xúc xắc (y) không?: ")  
+        if s_roll.lower() != "y":  
+            return current_score  
 
-            break
-        else: 
-             print("Invalid number of players. Please enter 2-4 players.")
-    else:
-            print("Invalid number of players. Please enter a number between 2 and 4.")
+        val = roll()  
+        if val == 1:  
+            print("Bạn lăn phải 1! Bạn mất lượt.")  
+            return 0  
+        else:  
+            current_score += val  
+            print(f"Bạn lăn được: {val}")  
+            print(f"Điểm hiện tại của bạn là: {current_score}")  
 
-max_score = 50
-players_scored = [ 0 for _ in range(players)] 
+def main():  
+    while True:  
+        players_input = input("Nhập số người chơi (2-4): ")  
+        if players_input.isdigit():  
+            players = int(players_input)  
+            if MIN_PLAYERS <= players <= MAX_PLAYERS:  
+                break  
+            else:  
+                print("Số người chơi không hợp lệ. Vui lòng nhập 2-4 người chơi.")  
+        else:  
+            print("Đầu vào không hợp lệ. Vui lòng nhập một số trong khoảng 2 đến 4.")  
 
-while max(players_scored) < max_score:
-    for i in range(players):
-        print(f"\nPlayer {i+1}'s turn\n") 
-        print(f"Your total score is: {players_scored[i]}\n")
-        current_score = 0
-        while True:
-            s_roll  = input("Would you want to roll (y)?: ")
-            if s_roll.lower() != "y":
-                break
+    players_scored = [0] * players  
 
-            val = roll()
-            if val == 1:
-                current_score = 0
-                print("You rolled a 1! You lose your turn.")
-                break
-            else:
-                current_score += val
-                print(f"You rolled a : {val}")
-            print(f"Your current score is: {current_score}")
-        players_scored[i] += current_score
-        print(f"Your total score is: {players_scored[i]}")
+    while max(players_scored) < WINNING_SCORE:  
+        for i in range(players):  
+            print(f"\nLượt của Người chơi {i + 1}")  
+            print(f"Tổng điểm của bạn là: {players_scored[i]}\n")  
+            current_score = player_turn(i, 0)  
+            players_scored[i] += current_score  
+            print(f"Tổng điểm của bạn là: {players_scored[i]}")  
+
+    max_score = max(players_scored)  
+    winning_player = players_scored.index(max_score) + 1  
+    print(f"Người chơi {winning_player} thắng với số điểm {max_score}")  
+
+if __name__ == "__main__":  
+    main()
